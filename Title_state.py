@@ -30,10 +30,10 @@ g_mwapen_imag=None # 메인 웨폰 이미지
 g_swapen_imag=None #사이드 웨폰 이미지
 g_grenades_imag=None # 수류탄 이미지
 g_line_animg=None #라인 애니메이션
-
+g_background_imag=None #배경이미지
 def enter():
-    global g_select_imag, g_btn_animag,g_btnon_imag,g_btnoff_imag,g_select_arrow_imag,g_mwapen_imag,g_swapen_imag,g_grenades_imag,g_line_animg, g_mouse_imag
-    g_select_imag=load_image('resource/Title_Resource/SelectGun2.png')    #선택 창
+    global g_select_imag, g_btn_animag,g_btnon_imag,g_btnoff_imag,g_select_arrow_imag,g_mwapen_imag,g_swapen_imag,g_grenades_imag,g_line_animg, g_mouse_imag,g_background_imag
+    g_select_imag=load_image('resource/Title_Resource/SelectGun3.png')    #선택 창
     g_btn_animag=load_image('resource/Title_Resource/Button_ani.png')  # 버튼 애니매이션
     g_btnoff_imag=load_image('resource/Title_Resource/Button_play_off.png') #플레이 버튼  off
     g_btnon_imag=load_image('resource/TItle_Resource/Button_play_on.png')   # 플레이 버튼 on
@@ -41,6 +41,7 @@ def enter():
     g_mwapen_imag=load_image('resource/Title_Resource/Wapen_Scroll.png')     # 무기스크롤
     g_swapen_imag=load_image('resource/Title_Resource/HG_Scroll.png')     # 보조무기스크롤
     g_mouse_imag = load_image('resource/Title_Resource/ArrowCursor.png')  # 마우스 이미지
+    g_background_imag = load_image('resource/Title_Resource/BG.png')  # 배경화면
 #    g_grenades_imag=load_image('resource/Title_Resource/HG_Scrool.png')   # 수류탄 스크롤
 #    g_line_animg=load_image('resource/Title_Resource/HG_Scrool.png')    #라인 애니메이션
 
@@ -56,6 +57,7 @@ def exit():
     del (g_grenades_imag)
     del (g_line_animg)
     del(g_mouse_imag)
+    del(g_background_imag)
     close_canvas()
 
 
@@ -65,13 +67,9 @@ def draw():
     global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mwapen_imag, g_swapen_imag, g_grenades_imag, g_line_animg#이미지
     global g_button_value,g_mouse_x,g_mouse_y
     clear_canvas()
-    g_select_imag.draw(485,180)
+    #g_background_imag.draw(400,300,800,600)
 
-    ########################
-    # 마우스 커서 관련
-    ########################
-    g_mouse_imag.draw(g_mouse_x+13,g_mouse_y-16,120,120)
-    hide_cursor()
+    g_select_imag.draw(485,180)
     ########################
     # 버튼 이미지 관련
     ########################
@@ -108,6 +106,15 @@ def draw():
         g_btnoff_imag.draw(725,30,120,60) #마우스 off
     else:
         g_btnon_imag.draw(725,30,120,60) #마우스 on
+
+
+
+    ########################
+    # 마우스 커서 관련
+    ########################
+    g_mouse_imag.draw(g_mouse_x + 13, g_mouse_y - 16, 120, 120)
+    hide_cursor()
+
     update_canvas()
 
 
