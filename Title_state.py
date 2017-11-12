@@ -7,7 +7,7 @@ from pico2d import *
 ########################
 # 전역변수
 ########################
-g_main_scroll,g_sub_scroll=0,0  # 이동 스크롤 값
+g_main_scroll,g_sub_scroll,g_sub2_scroll=0,0,0  # 이동 스크롤 값
 g_button_value=[0, 0]  # 버튼 애니메이션을 처리해줄 변수
 g_posresult=0
 g_mouse_x,g_mouse_y=0,0
@@ -42,7 +42,7 @@ def enter():
     g_swapen_imag=load_image('resource/Title_Resource/HG_Scroll.png')     # 보조무기스크롤
     g_mouse_imag = load_image('resource/Title_Resource/ArrowCursor.png')  # 마우스 이미지
     g_background_imag = load_image('resource/Title_Resource/BG.png')  # 배경화면
-#    g_grenades_imag=load_image('resource/Title_Resource/HG_Scrool.png')   # 수류탄 스크롤
+    g_grenades_imag=load_image('resource/Title_Resource/grenades_Scroll.png')   # 수류탄 스크롤
 #    g_line_animg=load_image('resource/Title_Resource/HG_Scrool.png')    #라인 애니메이션
 
 def exit():
@@ -100,6 +100,22 @@ def draw():
     else:
         g_select_arrow_imag.clip_draw(50, 0, 25, 25, 407, 70)  # 오른쪽
     ########################
+    #  수류탄 이미지 관련
+    ########################
+    g_grenades_imag.clip_draw(g_sub2_scroll, 0, 150, 100, 517, 107)  # 보조무기 스크롤
+    if (g_posresult == "SUB2_LEFT"):
+        g_select_arrow_imag.clip_draw(25, 0, 25, 25, 478, 70)  # 왼쪽
+    else:
+        g_select_arrow_imag.clip_draw(0, 0, 25, 25, 478, 70)  # 왼쪽
+    if (g_posresult == "SUB2_RIGHT"):
+        g_select_arrow_imag.clip_draw(75, 0, 25, 25, 564, 70)  # 오른쪽
+    else:
+        g_select_arrow_imag.clip_draw(50, 0, 25, 25, 564, 70)  # 오른쪽
+
+
+
+
+    ########################
     # 스타트 이미지 관련
     ########################
     if(g_posresult=="PLAY_GAME"):
@@ -155,6 +171,10 @@ def MouseMotion(x,y): # 마우스 모션 처리 함수
         g_posresult=g_arrow_table[2]
     elif (x >= 396 and x <= 417) and (y >= 60 and y <= 80): # 보조무기 오른쪽 화살표
         g_posresult=g_arrow_table[3]
+    elif (x >= 466 and x <= 490) and (y >= 60 and y <= 80):  # 수류탄 왼쪽 화살표
+        g_posresult = g_arrow_table[4]
+    elif (x >= 552 and x <= 576) and (y >= 60 and y <= 80):  # 수류탄 오른쪽 화살표
+        g_posresult = g_arrow_table[5]
     elif (x >= 670 and x <= 780) and (y >= 5 and y <= 50):  # 플레이 버튼
         g_posresult=g_arrow_table[6]
     else:
