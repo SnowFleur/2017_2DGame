@@ -24,7 +24,6 @@ class Unit:
         self.xmove,self.ymove=0,0
         self.xpos_,self.ypos_=100,100
         self.keyindex=[False,False,False,False]
-
         if(Unit.image==None):
             Unit.image=load_image('resource/Unit/unit ani.png')
     def Draw(self):    #Left,Bottom,가로길이,세로길이,x,y,
@@ -42,6 +41,7 @@ class Unit:
 
     # self.image.clip_draw(self.frame_ * 70, 100, 70, 500, 170, 100)
        # self.frame_ = self.frame_ % 8
+
 
     def UnitControl(self, event):
         if(event.type,event.key)==(SDL_KEYDOWN,SDLK_LEFT): #왼쪽 이동

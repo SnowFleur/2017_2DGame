@@ -130,9 +130,7 @@ def draw():
     ########################
     g_mouse_imag.draw(g_mouse_x + 13, g_mouse_y - 16, 120, 120)
     hide_cursor()
-
     update_canvas()
-
 
 def handle_events():
     global g_mouse_x,g_mouse_y
@@ -142,7 +140,7 @@ def handle_events():
             game_framework.quit()
         if event.type==SDL_MOUSEMOTION:  # 마우스 on
             x, y = event.x, 600 - event.y
-            g_mouse_x,g_mouse_y=x,y
+            g_mouse_x,g_mouse_y=x,y     #마우스 이미지 변수
             MouseMotion(x,y)  # 마우스 모션 함수
         if event.type==SDL_MOUSEBUTTONDOWN: #마우스 클릭
             x, y = event.x, 600 - event.y
