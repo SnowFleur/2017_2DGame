@@ -16,6 +16,13 @@ class Map:
             self.secondmap_.draw(400,300)
 
 class Unit:
+
+    PIXEL_PER_METER=(10.0/0.3)  #10 pixel 30cm
+    RUN_SPPED_KMPH=20.0   #시간당 20km
+    RUN_SPEED_MPH=(RUN_SPPED_KMPH*1000.0/60.0)
+    RUN_SPEED_MPS=(RUN_SPEED_MPH/60.0)
+    RUN_SPEED_PPS=(RUN_SPEED_MPS* PIXEL_PER_METER)
+
     image = None
     KEY_DOWN,KEY_UP=True,False
     LEFT_KEY,RIGHT_KEY,UP_KEY,DOWN_KEY=0,1,2,3

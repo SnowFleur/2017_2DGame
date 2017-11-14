@@ -23,8 +23,10 @@ def exit():
     del (map)
     del(g_mouse_aim)
     close_canvas()
+
 def update():
     pass
+
 
 def draw():
     global g_aimframe
@@ -35,6 +37,7 @@ def draw():
     unit.Draw()
     #  def rotate_draw(self, rad, x, y, w = None, h = None):
     g_shell.rotate_draw(temp,400,300,50,100)
+
     if temp<6.5:
         temp+=0.005
    # g_shell.draw(400,300,25,50)
