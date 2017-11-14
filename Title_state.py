@@ -63,7 +63,7 @@ def exit():
 
 #추후 정리 선 작동유무 ,후 정리
 #전역변수 선언됨 프레임 및 타이머 또한 함수 처리
-def draw():
+def draw(frame_time):
     global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mwapen_imag, g_swapen_imag, g_grenades_imag, g_line_animg#이미지
     global g_button_value,g_mouse_x,g_mouse_y
     clear_canvas()
@@ -132,7 +132,7 @@ def draw():
     hide_cursor()
     update_canvas()
 
-def handle_events():
+def handle_events(frame_time):
     global g_mouse_x,g_mouse_y
     events = get_events()
     for event in events:
@@ -198,7 +198,7 @@ def ButtonAnimation(button_value): # 간단한 버튼 애니메이션
     #        timer = 0
 
 
-def update():
+def update(frame_time):
     pass
 def pause():
     pass

@@ -24,11 +24,11 @@ def exit():
     del(g_mouse_aim)
     close_canvas()
 
-def update():
+def update(frame_time):
     pass
 
 
-def draw():
+def draw(frame_time):
     global g_aimframe
     global g_shell
     global temp
@@ -49,7 +49,7 @@ def draw():
     hide_cursor()
     update_canvas()
 
-def handle_events():
+def handle_events(frame_time):
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
     MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
