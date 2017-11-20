@@ -23,13 +23,18 @@ class Unit:
     RUN_SPEED_MPS=(RUN_SPEED_MPH/60.0)
     RUN_SPEED_PPS=(RUN_SPEED_MPS* PIXEL_PER_METER)
 
+    TIME_PER_ACTION = 0.5
+    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+    FRAMES_PER_ACTION = 8
+
     image = None
     KEY_DOWN,KEY_UP=True,False
     LEFT_KEY,RIGHT_KEY,UP_KEY,DOWN_KEY=0,1,2,3
     def __init__(self):
         self.frame_ = 1
-        self.xmove,self.ymove=0,0
+        self.xmove_,self.ymove_=0,0
         self.xpos_,self.ypos_=100,100
+        self.total_frames = 0.0
         self.keyindex=[False,False,False,False]
         if(Unit.image==None):
             Unit.image=load_image('resource/Unit/unit ani.png')
@@ -37,10 +42,10 @@ class Unit:
                         # Bottom은 실질적인 이미지 크기 인거 같음
                         #1. 가로 , 2. 세로,가로넓이,세로넓이,
         #self.image.clip_draw(self.frame_*70, 200, 50, 50, 100, 100)
-        self.ypos_+=self.ymove
-        self.xpos_ +=self.xmove
+
         self.image.clip_draw(0,550, 50, 50, self.xpos_, self.ypos_)
         self.frame_ += 1
+
 
         # angle,x,y,가로크기,세로크기
         #self.image.rotate_clip.draw(0,56,200,100,100,100,100)
@@ -48,56 +53,61 @@ class Unit:
 
     # self.image.clip_draw(self.frame_ * 70, 100, 70, 500, 170, 100)
        # self.frame_ = self.frame_ % 8
+    def UpDate(self, frame_time):
+        distance = Unit.RUN_SPEED_PPS * frame_time
+
+        self.ypos_ += (self.ymove_*distance)
+        self.xpos_ += (self.xmove_*distance)
 
 
     def UnitControl(self, event):
         if(event.type,event.key)==(SDL_KEYDOWN,SDLK_LEFT): #왼쪽 이동
-            self.xmove=-5
+            self.xmove_=-1
             print("왼쪽")
             self.keyindex[self.LEFT_KEY]=self.KEY_DOWN
 
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):  # 오른쪽 이동
-            self.xmove= 5
+            self.xmove_= 1
             print("오른쪽")
             self.keyindex[self.RIGHT_KEY] = self.KEY_DOWN
 
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_UP):  # 위쪽 이동
-                self.ymove = 5
+                self.ymove_ = 1
                 print("위쪽")
                 self.keyindex[self.UP_KEY] = self.KEY_DOWN
 
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_DOWN):  # 아래쪽 이동
-                self.ymove = -5
+                self.ymove_ = -1
                 print("아래쪽")
                 self.keyindex[self.DOWN_KEY] = self.KEY_DOWN
         if (event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):  # 왼쪽 업
             if self.keyindex[self.RIGHT_KEY]==self.KEY_DOWN:
-                self.xmove = 5
+                self.xmove_ = 1
                 self.keyindex[self.LEFT_KEY]=self.KEY_UP
             else:
-                self.xmove=0
+                self.xmove_=0
                 self.keyindex[self.LEFT_KEY]=self.KEY_UP
 
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):  # 오른쪽 업
             if self.keyindex[self.LEFT_KEY] == self.KEY_DOWN:
-                self.xmove = -5
+                self.xmove_ = -1
                 self.keyindex[self.RIGHT_KEY] = self.KEY_UP
             else:
-                self.xmove=0
+                self.xmove_=0
                 self.keyindex[self.RIGHT_KEY] = self.KEY_UP
 
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_UP):  # 윗키 업
             if self.keyindex[self.DOWN_KEY]==self.KEY_DOWN:
-                self.ymove = -5
+                self.ymove_ = -1
                 self.keyindex[self.UP_KEY]=self.KEY_UP
             else:
-                self.ymove=0
+                self.ymove_=0
                 self.keyindex[self.UP_KEY] = self.KEY_UP
 
         elif (event.type, event.key) == (SDL_KEYUP, SDLK_DOWN):  # 아래키 업
             if self.keyindex[self.UP_KEY] == self.KEY_DOWN:
-                self.ymove = 5
+                self.ymove_ = 1
                 self.keyindex[self.DOWN_KEY] = self.KEY_UP
             else:
-                self.ymove=0
+                self.ymove_=0
                 self.keyindex[self.DOWN_KEY] = self.KEY_UP

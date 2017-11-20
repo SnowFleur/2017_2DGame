@@ -1,5 +1,6 @@
 from pico2d import *
 from Class import *
+from Title_state import *
 import game_framework
 
 ########################
@@ -11,21 +12,25 @@ g_shell=None  #탄피
 temp=0
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
-    global g_shell
+    global g_shell, g_mwapen_imag,g_sub_wapen
+
     open_canvas()
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
-    g_shell=load_image("resource/UI/shell.png")
+    g_shell=load_image("resource/UI/shell.png") #탄피 이미지 로드
+
+    g_mwapen_imag=load_image("resource/Main_Resource/in game.png")
+    g_sub_wapen=load_image("resource/Main_Resource/in game.png")
+
+
+
 def exit():
     global unit,map,g_mouse_aim
     del (unit)
     del (map)
     del(g_mouse_aim)
     close_canvas()
-
-def update(frame_time):
-    pass
 
 
 def draw(frame_time):
@@ -41,6 +46,10 @@ def draw(frame_time):
     if temp<6.5:
         temp+=0.005
    # g_shell.draw(400,300,25,50)
+
+
+    g_mwapen_imag.clip_draw(g_main_scroll, 0, 100, 100, 475, 275)
+
 
     ########################
     # 마우스 커서 관련
@@ -91,6 +100,12 @@ def pause():
 
 def resume():
     pass
+
+
+def update(frame_time):
+    Unit.UpDate(unit,frame_time)
+
+
 
 def get_frame_time():
 

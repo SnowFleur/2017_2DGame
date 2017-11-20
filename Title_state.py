@@ -4,6 +4,7 @@
 
 import game_framework
 from pico2d import *
+
 ########################
 # 전역변수
 ########################
