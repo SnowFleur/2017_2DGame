@@ -1,4 +1,7 @@
 from pico2d import *
+from Title_state import *
+import Main_state
+from math import *
 import Main_state
 
 
@@ -27,35 +30,28 @@ class Unit:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 8
 
-    image = None
+    #상수 매크로 정의
+    USAS,AWP,SCAR,M4,M16A1,MP5,UMP=0,150,300,450,600,750,900
+    ANACONDA,D_EAGLE,GLOCK=0,150,300
+    main_gun,hand_gun=None,None
     KEY_DOWN,KEY_UP=True,False
     LEFT_KEY,RIGHT_KEY,UP_KEY,DOWN_KEY=0,1,2,3
     def __init__(self):
-        self.frame_ = 1
-        self.xmove_,self.ymove_=0,0
-        self.xpos_,self.ypos_=100,100
-        self.total_frames = 0.0
-        self.keyindex=[False,False,False,False]
-        if(Unit.image==None):
-            Unit.image=load_image('resource/Unit/unit ani.png')
+        self.xmove_,self.ymove_=0,0    #키보드 연속 입력처리를 위한 변수
+        self.xpos_,self.ypos_=100,100 # 실질적인 객체 위치 값
+        self.rotate_=0 # 마우스 위치에 따른 객체 회전
+        self.keyindex=[False,False,False,False] #키보드 인덱스
+        if(Unit.main_gun==None):
+            self.LoadImage()
+
     def Draw(self):    #Left,Bottom,가로길이,세로길이,x,y,
-                        # Bottom은 실질적인 이미지 크기 인거 같음
-                        #1. 가로 , 2. 세로,가로넓이,세로넓이,
-        #self.image.clip_draw(self.frame_*70, 200, 50, 50, 100, 100)
+        Unit.main_gun.rotate_draw(self.rotate_,self.xpos_,self.ypos_)
 
-        self.image.clip_draw(0,550, 50, 50, self.xpos_, self.ypos_)
-        self.frame_ += 1
-
-
-        # angle,x,y,가로크기,세로크기
-        #self.image.rotate_clip.draw(0,56,200,100,100,100,100)
-        #self.image.rotate_draw(56,200,100,100,100)
-
-    # self.image.clip_draw(self.frame_ * 70, 100, 70, 500, 170, 100)
-       # self.frame_ = self.frame_ % 8
     def UpDate(self, frame_time):
-        distance = Unit.RUN_SPEED_PPS * frame_time
+        print(" 마우스 %d",Main_state.g_mouse_y)
+        self.rotate_=atan2( -(Main_state.g_mouse_x-self.xpos_) ,( Main_state.g_mouse_y-self.ypos_ ))
 
+        distance = Unit.RUN_SPEED_PPS * frame_time
         self.ypos_ += (self.ymove_*distance)
         self.xpos_ += (self.xmove_*distance)
 
@@ -111,3 +107,28 @@ class Unit:
             else:
                 self.ymove_=0
                 self.keyindex[self.DOWN_KEY] = self.KEY_UP
+
+    def LoadImage(self):
+        # 메인무기 이미지 로드
+        if g_main_scroll == Unit.USAS:
+            Unit.main_gun = load_image("resource/weapon/USAS_INGAME.png")
+        elif g_main_scroll == Unit.AWP:
+            Unit.main_gun = load_image("resource/weapon/AWP_INGAME.png")
+        elif g_main_scroll == Unit.SCAR:
+            Unit.main_gun = load_image("resource/weapon/SCAR_INGAME.png")
+        elif g_main_scroll == Unit.M4:
+            Unit.main_gun = load_image("resource/weapon/M4_INGAME.png")
+        elif g_main_scroll == Unit.M16A1:
+            Unit.main_gun = load_image("resource/weapon/USAS_INGAME.png")
+        elif g_main_scroll == Unit.MP5:
+            Unit.main_gun = load_image("resource/weapon/MP5_INGAME.png")
+        elif g_main_scroll == Unit.UMP:
+            Unit.main_gun = load_image("resource/weapon/UMP_INGAME.png")
+            # 핸드건 이미지 로드
+            #      if g_sub_scroll==Unit.ANACONDA:
+            #          Unit.hand_gun=load_image("resource/weapon/ANACONDA_INGAME.png")
+            #      elif g_sub_scroll==Unit.D_EAGLE:
+            #          Unit.hand_gun=load_image("resource/weapon/D_EAGLE_INGAME.png")
+            #      elif g_sub_scroll==Unit.GLOCK:
+            #          Unit.hand_gun=load_image("resource/weapon/GLOCK_INGAME.png")
+

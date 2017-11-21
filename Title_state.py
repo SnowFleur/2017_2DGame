@@ -27,34 +27,34 @@ g_btnoff_imag=None  #마우스 올리기 전
 g_btnon_imag=None   # 마우스 올린 후
 g_mouse_imag=None  #마우스 이미지
 g_select_arrow_imag=None  #선택 화살표
-g_mwapen_imag=None # 메인 웨폰 이미지
-g_swapen_imag=None #사이드 웨폰 이미지
+g_mweapon_imag=None # 메인 웨폰 이미지
+g_sweapon_imag=None #사이드 웨폰 이미지
 g_grenades_imag=None # 수류탄 이미지
 g_line_animg=None #라인 애니메이션
 g_background_imag=None #배경이미지
 def enter():
-    global g_select_imag, g_btn_animag,g_btnon_imag,g_btnoff_imag,g_select_arrow_imag,g_mwapen_imag,g_swapen_imag,g_grenades_imag,g_line_animg, g_mouse_imag,g_background_imag
+    global g_select_imag, g_btn_animag,g_btnon_imag,g_btnoff_imag,g_select_arrow_imag,g_mweapon_imag,g_sweapon_imag,g_grenades_imag,g_line_animg, g_mouse_imag,g_background_imag
     g_select_imag=load_image('resource/Title_Resource/SelectGun3.png')    #선택 창
     g_btn_animag=load_image('resource/Title_Resource/Button_ani.png')  # 버튼 애니매이션
     g_btnoff_imag=load_image('resource/Title_Resource/Button_play_off.png') #플레이 버튼  off
     g_btnon_imag=load_image('resource/TItle_Resource/Button_play_on.png')   # 플레이 버튼 on
     g_select_arrow_imag=load_image('resource/Title_Resource/LEFT_RIGHT.png')  #화살표 애니메이션
-    g_mwapen_imag=load_image('resource/Title_Resource/Wapen_Scroll.png')     # 무기스크롤
-    g_swapen_imag=load_image('resource/Title_Resource/HG_Scroll.png')     # 보조무기스크롤
+    g_mweapon_imag=load_image('resource/Title_Resource/Wapen_Scroll.png')     # 무기스크롤
+    g_sweapon_imag=load_image('resource/Title_Resource/HG_Scroll.png')     # 보조무기스크롤
     g_mouse_imag = load_image('resource/Title_Resource/ArrowCursor.png')  # 마우스 이미지
     g_background_imag = load_image('resource/Title_Resource/BG.png')  # 배경화면
     g_grenades_imag=load_image('resource/Title_Resource/grenades_Scroll.png')   # 수류탄 스크롤
 #    g_line_animg=load_image('resource/Title_Resource/HG_Scrool.png')    #라인 애니메이션
 
 def exit():
-    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mwapen_imag, g_swapen_imag, g_grenades_imag, g_line_animg
+    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mweapon_imag, g_sweapon_imag, g_grenades_imag, g_line_animg, g_mouse_imag, g_background_ima
     del(g_select_imag)
     del(g_btn_animag)
     del(g_btnon_imag)
     del(g_btnoff_imag)
     del(g_select_arrow_imag)
-    del(g_mwapen_imag)
-    del(g_swapen_imag)
+    del(g_mweapon_imag)
+    del(g_sweapon_imag)
     del (g_grenades_imag)
     del (g_line_animg)
     del(g_mouse_imag)
@@ -65,7 +65,7 @@ def exit():
 #추후 정리 선 작동유무 ,후 정리
 #전역변수 선언됨 프레임 및 타이머 또한 함수 처리
 def draw(frame_time):
-    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mwapen_imag, g_swapen_imag, g_grenades_imag, g_line_animg#이미지
+    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mweapon_imag, g_sweapon_imag, g_grenades_imag, g_line_animg, g_mouse_imag, g_backgro#이미지
     global g_button_value,g_mouse_x,g_mouse_y
     clear_canvas()
     #g_background_imag.draw(400,300,800,600)
@@ -79,7 +79,7 @@ def draw(frame_time):
     ########################
     # 메인무기 이미지 관련
     ########################
-    g_mwapen_imag.clip_draw(g_main_scroll,0,150,100,475,275)  #메인무기 스크롤
+    g_mweapon_imag.clip_draw(g_main_scroll,0,150,100,475,275)  #메인무기 스크롤
     if(g_posresult=="MAIN_LEFT"):
         g_select_arrow_imag.clip_draw(25, 0, 25, 25, 397, 232)  # 왼쪽
     else:
@@ -91,7 +91,7 @@ def draw(frame_time):
     ########################
     #  보조무기 이미지 관련
     ########################
-    g_swapen_imag.clip_draw(g_sub_scroll,0,150,80,360,100)  #보조무기 스크롤
+    g_sweapon_imag.clip_draw(g_sub_scroll,0,150,80,360,100)  #보조무기 스크롤
     if(g_posresult=="SUB_LEFT"):
         g_select_arrow_imag.clip_draw(25, 0, 25, 25, 321, 70)  # 왼쪽
     else:
