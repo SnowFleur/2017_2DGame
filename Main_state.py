@@ -1,7 +1,8 @@
 from pico2d import *
-from Class import *
+from Unit_Class import *
+from Map_Class import*
+from Bullet_Class import *
 from Title_state import *
-from Weapon import *
 import game_framework
 
 ########################
@@ -10,26 +11,27 @@ import game_framework
 g_aimframe=0  # 에임 프레임
 g_button_type=[0,0] #마우스 버튼 타입 및 값
 g_shell=None  #탄피
-temp=0
+g_count=0
+temp=0   #임시 돌리기 변수
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
-    global g_shell,gun
-
+    global g_shell,bullet
+#    balls = [Ball() for i in range(10)]
     open_canvas()
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
+    bullet=[Bullet() for i in range(100)] #총알 객체 생성
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
     g_shell=load_image("resource/UI/shell.png") #탄피 이미지 로드
-    gun=Gun() # gun 객체 색성
 
 
 
 def exit():
-    global unit,map,g_mouse_aim
+    global unit,map,g_mouse_aim,bullet
     del (unit)
     del (map)
     del(g_mouse_aim)
-    del(gun)
+    del(bullet)
     close_canvas()
 
 
@@ -40,20 +42,18 @@ def draw(frame_time):
     clear_canvas()
   #  map.Draw() #맵 생성
 
-   # gun.Draw()
+
     unit.Draw()
-    #  def rotate_draw(self, rad, x, y, w = None, h = None):
+    for bullets in bullet:
+        bullets.Draw()
 
     g_shell.rotate_draw(temp,400,300,50,100)
-#    g_mweapon_imag.rotate_draw(g_mouse_x,g_main_scroll+300, 0, 100, 100, 77, 130)
+
+    draw_rectangle(0,0,100,100)
+
     if temp<6.5:
         temp+=0.005
-   # g_shell.draw(400,300,25,50)
 
-    ########################
-    # 무기 관련
-    ########################
-   # g_mweapon_imag.clip_draw(g_main_scroll+300, 0, 100, 100, 77, 130)
 
     ########################
     # 마우스 커서 관련
@@ -65,6 +65,7 @@ def draw(frame_time):
 def handle_events(frame_time):
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
+    global g_count
     MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
     events = get_events()
     for event in events:
@@ -73,10 +74,16 @@ def handle_events(frame_time):
         elif event.type == SDL_MOUSEMOTION:  # 마우스 on
             x, y = event.x, 600 - event.y
             g_mouse_x, g_mouse_y = x, y  # 마우스 이미지 변수
-        elif (event.type,event.button) == (SDL_MOUSEBUTTONDOWN,SDL_BUTTON_LEFT): #마우스클릭
+        elif (event.type,event.button) == (SDL_MOUSEBUTTONDOWN,SDL_BUTTON_LEFT): #마우스클릭 (DWON)
             g_button_type[0]=MOUSE_DOWN
             g_button_type[1]=60
-        elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):  # 마우스클릭
+            bullet[g_count].Shot()   #총알 날리기
+            positon_x, position_y = unit.ReturnPositon()
+            bullet[g_count].UnitPosition(positon_x + 40, position_y + 20)
+            g_count+=1
+
+            print("%d,%d",positon_x,position_y)
+        elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):  # 마우스클릭 (UP)
             g_button_type[0] = MOUSE_UP
             g_button_type[1] = 0
         else:
@@ -108,6 +115,8 @@ def resume():
 
 def update(frame_time):
     Unit.UpDate(unit,frame_time)
+    for bullets in bullet:
+        bullets.Update(frame_time)
 
 
 
