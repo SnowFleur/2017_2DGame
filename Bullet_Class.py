@@ -1,3 +1,4 @@
+import random
 from pico2d import *
 from math import *
 import  Main_state
@@ -14,12 +15,14 @@ class Bullet:
     TIME_PER_ACTION = 0.5
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 8
-
+    REBOUND_MINUS,REBOUND_PLUS=0,1
 
     def __init__(self):
         self.xpos_,self.ypos_=0,0
         self.xmove_,self.ymove_=0,0
         self.rotate_=0
+        self.rebound_=0 #반동
+        self.rate_time=0 #이걸 주지 않으면 너무 많은 이미지가 한꺼번에 나감
         if Bullet.imag==None:
             Bullet.imag=load_image("resource/Main_Resource/Bullet.png")
     def Draw(self):  #상수 매크로 에 따른 맵 그리기
@@ -29,19 +32,55 @@ class Bullet:
         self.ypos_ += (self.ymove_ * distance)
         self.xpos_ += (self.xmove_ * distance)
     def Shot(self):
-        self.rotate_=atan2( -(Main_state.g_mouse_x-self.xpos_) ,( Main_state.g_mouse_y-self.ypos_ ))
-        ax=cos(self.rotate_)
-        ay=sin(self.rotate_)
-
-     #   ax=Main_state.g_mouse_x-self.xpos_
-     #   ay=Main_state.g_mouse_y-self.ypos_
-     #   m=ax/ay
-        self.ymove_=ax
-        self.xmove_=-ay
-    def UnitPosition(self,xpos,ypos):
+        self.ymove_=cos(self.rotate_)*10
+        self.xmove_=  - sin(self.rotate_)*10
+    def UnitPosition(self,xpos,ypos,rotate):
         self.xpos_=xpos
         self.ypos_=ypos
+        self.rotate_=rotate
+    def RateShot(self,rebound):  #연속 발사
+        self.rebound_=rebound
+        self.rate_time+=1
+        if self.rate_time>25:
+            dir= random.randint(Bullet.REBOUND_MINUS,Bullet.REBOUND_PLUS)
+            if dir==Bullet.REBOUND_PLUS:
+                self.ymove_ = cos(self.rotate_) * 10
+                self.xmove_ = - sin(self.rotate_) * 10 + self.rebound_
+            if dir==Bullet.REBOUND_MINUS:
+                self.ymove_ = cos(self.rotate_) * 10
+                self.xmove_ = - sin(self.rotate_) * 10 - self.rebound_
 
+            # +,- 왼쪽
+            # +,+ 오른쪽
+
+            self.rate_time=0
+
+            return True
+
+
+
+class Shell:
+    image=None
+    def __init__(self):
+        self.xpos_,self.ypos_=0,0  # 탄피 위치
+        self.rotate_=0  # 회전 값
+        self.shot_=0 #총알 솼는지 여부 단위
+        self.time_= random.randint(100,200) #탄피 회전 시간
+        self.remove_time_=0 #탄피 사라질 시간
+        if Shell.image==None:
+            Shell.image= load_image("resource/Main_Resource/shell.png")
+    def Darw(self):
+        Shell.image.rotate_draw(self.rotate_, self.xpos_, self.ypos_, 25, 50)
+    def Update(self, frame_time):
+        distance =  (self.time_/10)* frame_time
+        self.rotate_ += (self.shot_ * distance)
+        if self.time_>0 and self.shot_==1:
+            self.time_= self.time_-1
+
+
+    def InputPosition(self,xpos,ypos):
+        self.xpos_,self.ypos_=xpos,ypos
+        self.shot_=1
 
 
 

@@ -29,19 +29,21 @@ class Unit:
         if(Unit.main_gun==None):
             self.LoadImage()
 
-    def Draw(self):    #Left,Bottom,가로길이,세로길이,x,y,
+    def Draw(self):    #캐릭터 그리기
         Unit.main_gun.rotate_draw(self.rotate_,self.xpos_,self.ypos_)
 
-    def UpDate(self, frame_time):
+    def UpDate(self, frame_time):  # 마우스 가 바라보는 방향에 따라 이미지 회전 함수
         self.rotate_=atan2( -(Main_state.g_mouse_x-self.xpos_) ,( Main_state.g_mouse_y-self.ypos_ ))
-
         distance = Unit.RUN_SPEED_PPS * frame_time
         self.ypos_ += (self.ymove_*distance)
         self.xpos_ += (self.xmove_*distance)
-    def ReturnPositon(self):
+
+    def ReturnRotate(self):   #현재 캐릭터가 바라보는 각도를 반환 해주는 함수
+        return self.rotate_
+    def ReturnPositon(self): #현재 캐릭터의 위치를 반환 해주는 함수
         return self.xpos_,self.ypos_
 
-    def UnitControl(self, event):
+    def UnitControl(self, event):  # 전체적인 유닛 컨트롤
         if(event.type,event.key)==(SDL_KEYDOWN,SDLK_LEFT): #왼쪽 이동
             self.xmove_=-1
             print("왼쪽")
@@ -93,7 +95,7 @@ class Unit:
                 self.ymove_=0
                 self.keyindex[self.DOWN_KEY] = self.KEY_UP
 
-    def LoadImage(self):
+    def LoadImage(self):  # 타이틀 화면에서 선택한 무기의 이미지를 불러올 함수
         # 메인무기 이미지 로드
         if g_main_scroll == Unit.USAS:
             Unit.main_gun = load_image("resource/weapon/USAS_INGAME.png")

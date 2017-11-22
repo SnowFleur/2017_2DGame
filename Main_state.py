@@ -1,8 +1,8 @@
-from pico2d import *
 from Unit_Class import *
 from Map_Class import*
 from Bullet_Class import *
 from Title_state import *
+from pico2d import *
 import game_framework
 
 ########################
@@ -10,50 +10,54 @@ import game_framework
 ########################
 g_aimframe=0  # 에임 프레임
 g_button_type=[0,0] #마우스 버튼 타입 및 값
-g_shell=None  #탄피
-g_count=0
-temp=0   #임시 돌리기 변수
+g_count=0   # 총알 갯수
+g_rebound=0 #반동
+g_rebound_time = 0  # 반동 시간 제한할 지역변수
+
+
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
-    global g_shell,bullet
+    global shell,bullet  #탄피(클래스),총알(클래스)
 #    balls = [Ball() for i in range(10)]
     open_canvas()
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     bullet=[Bullet() for i in range(100)] #총알 객체 생성
+    shell=[Shell() for i in range(100)] # 탄피 객체 생성
+
+
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
-    g_shell=load_image("resource/UI/shell.png") #탄피 이미지 로드
-
-
 
 def exit():
-    global unit,map,g_mouse_aim,bullet
+    global unit,map,g_mouse_aim,bullet,shell
     del (unit)
     del (map)
     del(g_mouse_aim)
+    #배열이기 때문에 이렇게 지워도 될지 모르겠음 아니면 연결리스트 마냥 다 지워야 하는지
     del(bullet)
+    del(shell)
     close_canvas()
 
 
 def draw(frame_time):
     global g_aimframe
-    global g_shell
-    global temp
     clear_canvas()
   #  map.Draw() #맵 생성
 
+    draw_rectangle(0,50,100,200)
 
-    unit.Draw()
+
+    ########################
+    # 총알 및 탄피
+    #########################
     for bullets in bullet:
         bullets.Draw()
-
-    g_shell.rotate_draw(temp,400,300,50,100)
-
-    draw_rectangle(0,0,100,100)
-
-    if temp<6.5:
-        temp+=0.005
-
+    for shells in shell:
+        shells.Darw()
+    ########################
+    # 유닛 및 무기
+    #########################
+    unit.Draw()
 
     ########################
     # 마우스 커서 관련
@@ -62,11 +66,17 @@ def draw(frame_time):
     hide_cursor()
     update_canvas()
 
+
 def handle_events(frame_time):
+    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
+    #전역변수
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
-    global g_count
-    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
+    global g_count   # 총알 카운터
+
+    #지역변수
+    position_y, position_x, position_rotate = 0, 0, 0  # 현재 유닛의 바라보는 방향과 위치 값 받을 지역변수
+    #********************
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -77,12 +87,22 @@ def handle_events(frame_time):
         elif (event.type,event.button) == (SDL_MOUSEBUTTONDOWN,SDL_BUTTON_LEFT): #마우스클릭 (DWON)
             g_button_type[0]=MOUSE_DOWN
             g_button_type[1]=60
-            bullet[g_count].Shot()   #총알 날리기
-            positon_x, position_y = unit.ReturnPositon()
-            bullet[g_count].UnitPosition(positon_x + 40, position_y + 20)
-            g_count+=1
 
-            print("%d,%d",positon_x,position_y)
+            ########################
+            # 총알 날리는 부분
+            ########################
+            position_rotate = unit.ReturnRotate()  # 유닛의 회전 좌표값
+            position_x, position_y = unit.ReturnPositon()  # 유닛의 현재 좌표
+            bullet[g_count].UnitPosition(position_x, position_y, position_rotate)
+            bullet[g_count].Shot()  # 총알 날리
+            ########################
+            # 탄피 나오는 부분
+            ########################
+            shell[g_count].InputPosition(position_x,position_y)
+            #+40,+20  나중에 오차 수정
+            g_count+=1  #총알 카운터 증가
+
+
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):  # 마우스클릭 (UP)
             g_button_type[0] = MOUSE_UP
             g_button_type[1] = 0
@@ -93,17 +113,50 @@ def handle_events(frame_time):
 
 
 
-def MouseClickEvents(button):
-    global g_aimframe  #클립이미지 옮길 변수
-    MOUSE_DOWN,MOUSE_UP=True,False  # 상수 매크로 정의
-    BUTTON_KIND,BUTTON_OPERATION=0,1# 상수 매크로 정의
+def MouseClickEvents(button):   #마우스를 누르고 있을때 처리할 함수
+    MOUSE_DOWN, MOUSE_UP = True, False  # 상수 매크로 정의
+    BUTTON_KIND, BUTTON_OPERATION = 0, 1  # 상수 매크로 정의
+    REBOUND_MAXTIME = 2  #반동 최대 시간 (이걸 안주면 반동이 너무 심함)
 
+    global g_aimframe,g_count  #클립이미지 옮길 변수
+    global g_rebound,g_rebound_time #반동 값,반동 걸릴 시간
+    #지역변수
+    shot=False  #마우스 누르고 있을때 발사 시간 제한 할 스위치 지역변수
+    position_y,position_x,position_rotate=0,0,0   # 현재 유닛의 바라보는 방향과 위치 값 받을 지역변수
+    # ********************
     if(button[BUTTON_KIND]==MOUSE_DOWN):
+
+        ########################
+        # 총알 날리는 부분(연사 반동 부분)
+        ########################
+        position_rotate = unit.ReturnRotate()  # 유닛의 회전 좌표값 받기
+        position_x, position_y = unit.ReturnPositon()  # 유닛의 현재 좌표 받기
+        bullet[g_count].UnitPosition(position_x, position_y, position_rotate)  # 현재 유닛의 바라보는 방향과 위치 를 탄알 에게 줌
+
+        shot=bullet[g_count].RateShot(g_rebound)  # 연속 총알 날리기
+        if shot==True: #발싸 되면 트루 값 반환
+            shell[g_count].InputPosition(position_x, position_y)  #탄피
+            g_count += 1  # 총알 카운터 증가
+            print("탄피값:%d",g_count)
+            g_rebound_time+=1  #반동 시간 증가 (사실상 g_count 와 역할이 같음;;;)
+            print("반동 시간 값 %d",g_rebound_time)
+            if g_rebound_time>REBOUND_MAXTIME:
+                if g_rebound<2:  #누르고 있는 동안은 반동값 증가
+                    g_rebound+=0.5
+                    g_rebound_time=0
+
         g_aimframe=min(240,g_aimframe+button[BUTTON_OPERATION])
         if g_aimframe>=240:
           g_aimframe-=120
+
+
     elif(button[BUTTON_KIND]==MOUSE_UP):
+        if g_rebound>0:  #마우스를 때는 동안은 반동값 감소
+            g_rebound-=0.5
+            g_rebound_time-=1
+            print("반동계수 %d,반동시간 %d",g_rebound,g_rebound_time)
         g_aimframe=min(0,g_aimframe-button[BUTTON_OPERATION])
+
 
 def pause():
     pass
@@ -117,8 +170,8 @@ def update(frame_time):
     Unit.UpDate(unit,frame_time)
     for bullets in bullet:
         bullets.Update(frame_time)
-
-
+    for shells in shell:
+        shells.Update(frame_time)
 
 def get_frame_time():
 
