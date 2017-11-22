@@ -3,7 +3,9 @@
 #추후 코드 정리
 
 import game_framework
+import  Main_state
 from pico2d import *
+
 
 ########################
 # 전역변수
@@ -47,7 +49,7 @@ def enter():
 #    g_line_animg=load_image('resource/Title_Resource/HG_Scrool.png')    #라인 애니메이션
 
 def exit():
-    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mweapon_imag, g_sweapon_imag, g_grenades_imag, g_line_animg, g_mouse_imag, g_background_ima
+    global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mweapon_imag, g_sweapon_imag, g_grenades_imag, g_line_animg, g_mouse_imag, g_background_imag
     del(g_select_imag)
     del(g_btn_animag)
     del(g_btnon_imag)
@@ -146,6 +148,9 @@ def handle_events(frame_time):
         if event.type==SDL_MOUSEBUTTONDOWN: #마우스 클릭
             x, y = event.x, 600 - event.y
             MouseClick(x, y)  # 마우스 모션 함수
+            if (x >= 670 and x <= 780) and (y >= 5 and y <= 50):
+                game_framework.push_state(Main_state)
+
 
 
 

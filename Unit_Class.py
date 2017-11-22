@@ -18,13 +18,17 @@ class Unit:
     #상수 매크로 정의
     USAS,AWP,SCAR,M4,M16A1,MP5,UMP=0,150,300,450,600,750,900
     ANACONDA,D_EAGLE,GLOCK=0,150,300
-    main_gun,hand_gun=None,None
+
+    main_gun,hand_gun=None,None  #유닛 이미지
+#    shot_effet[2]={None,None}
     KEY_DOWN,KEY_UP=True,False
     LEFT_KEY,RIGHT_KEY,UP_KEY,DOWN_KEY=0,1,2,3
     def __init__(self):
         self.xmove_,self.ymove_=0,0    #키보드 연속 입력처리를 위한 변수
         self.xpos_,self.ypos_=100,100 # 실질적인 객체 위치 값
         self.rotate_=0 # 마우스 위치에 따른 객체 회전
+        self.hp_=100 #유닛 HP 계수
+        self.shild=_=100 #유닛 실드
         self.keyindex=[False,False,False,False] #키보드 인덱스
         if(Unit.main_gun==None):
             self.LoadImage()
@@ -42,6 +46,8 @@ class Unit:
         return self.rotate_
     def ReturnPositon(self): #현재 캐릭터의 위치를 반환 해주는 함수
         return self.xpos_,self.ypos_
+    def ReturnBox(self):
+        return self.xpos_ -10,self.xpos_+10,self.ypos_+10,self.ypos_-10
 
     def UnitControl(self, event):  # 전체적인 유닛 컨트롤
         if(event.type,event.key)==(SDL_KEYDOWN,SDLK_LEFT): #왼쪽 이동

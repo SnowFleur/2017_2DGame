@@ -2,8 +2,12 @@ from Unit_Class import *
 from Map_Class import*
 from Bullet_Class import *
 from Title_state import *
+from Font_Class import *
+from AI_Class import *
 from pico2d import *
+from Physics import *
 import game_framework
+
 
 ########################
 # 전역변수
@@ -13,39 +17,44 @@ g_button_type=[0,0] #마우스 버튼 타입 및 값
 g_count=0   # 총알 갯수
 g_rebound=0 #반동
 g_rebound_time = 0  # 반동 시간 제한할 지역변수
-
-
+g_temp_time=0
+g_temp_image=None
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
     global shell,bullet  #탄피(클래스),총알(클래스)
+    global font #폰트
+    global ai,g_temp_image
 #    balls = [Ball() for i in range(10)]
-    open_canvas()
+  #  open_canvas()  이어 줄떄애는 꺼야함
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
+    ai=Ai() #ai 객체 색성
+   # font=Font()
     bullet=[Bullet() for i in range(100)] #총알 객체 생성
     shell=[Shell() for i in range(100)] # 탄피 객체 생성
 
-
+    g_temp_image=load_image("resource/Main_Resource/win_box.png")
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
 
 def exit():
-    global unit,map,g_mouse_aim,bullet,shell
+    global unit,map,g_mouse_aim,bullet,shell,ai
     del (unit)
     del (map)
     del(g_mouse_aim)
     #배열이기 때문에 이렇게 지워도 될지 모르겠음 아니면 연결리스트 마냥 다 지워야 하는지
     del(bullet)
     del(shell)
+    del(ai)
     close_canvas()
 
 
 def draw(frame_time):
     global g_aimframe
+    global  g_temp_time
     clear_canvas()
-  #  map.Draw() #맵 생성
+    map.Draw() #맵 생성
 
-    draw_rectangle(0,50,100,200)
-
+#    font.draw()
 
     ########################
     # 총알 및 탄피
@@ -58,11 +67,16 @@ def draw(frame_time):
     # 유닛 및 무기
     #########################
     unit.Draw()
+    if g_temp_time<500:
+        ai.Draw()
+    else:
+        g_temp_image.draw(400,300)
 
     ########################
     # 마우스 커서 관련
     ########################
     g_mouse_aim.clip_draw(g_aimframe,0,50,50,g_mouse_x,g_mouse_y)
+    g_temp_time+=1
     hide_cursor()
     update_canvas()
 
