@@ -67,7 +67,7 @@ def draw(frame_time):
     # 유닛 및 무기
     #########################
     unit.Draw()
-    if g_temp_time<500:
+    if g_temp_time<1200:
         ai.Draw()
     else:
         g_temp_image.draw(400,300)
