@@ -29,7 +29,7 @@ def enter():
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     ai=Ai() #ai 객체 색성
-   # font=Font()
+#    font=Font() # font 객체생성
     bullet=[Bullet() for i in range(100)] #총알 객체 생성
     shell=[Shell() for i in range(100)] # 탄피 객체 생성
 
@@ -67,10 +67,10 @@ def draw(frame_time):
     # 유닛 및 무기
     #########################
     unit.Draw()
-    if g_temp_time<1200:
-        ai.Draw()
-    else:
-        g_temp_image.draw(400,300)
+#    if g_temp_time<1200:
+    ai.Draw()
+#    else:
+#        g_temp_image.draw(400,300)
 
     ########################
     # 마우스 커서 관련

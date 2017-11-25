@@ -12,7 +12,7 @@ from pico2d import *
 ########################
 g_main_scroll,g_sub_scroll,g_sub2_scroll=0,0,0  # 이동 스크롤 값
 g_button_value=[0, 0]  # 버튼 애니메이션을 처리해줄 변수
-g_posresult=0
+g_posresult=0 #
 g_mouse_x,g_mouse_y=0,0
 ########################
 # 상수 변수

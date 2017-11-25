@@ -5,7 +5,8 @@ from pico2d import *
 #***************************
 class Ai:
     image = None
-    AI_MOVE,AI_ATTACK=0,1
+    AI_ATTACK,AI_MOVE,=0,1
+
     def __init__(self):
         self.xmove, self.ymove = 0, 0
         self.xpos_, self.ypos_ = 100, 500
@@ -26,10 +27,11 @@ class Ai:
     def ReturnBox(self):
         return self.xpos_ - 10, self.xpos_ + 10, self.ypos_ + 10, self.ypos_ - 10
 
-  #  handle_state = {
-     #   AI_ATTACK : AiAttack(),
-    #     AI_MOVE:AiMove(),
-    #    }
+
+    handle_state = {   # AI 핸들 컨트롤러
+            AI_ATTACK: AiAttack,
+            AI_MOVE: AiMove,
+                   }
 
 
     def update(self):
