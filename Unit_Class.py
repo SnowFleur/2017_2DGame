@@ -46,7 +46,7 @@ class Unit:
         return self.rotate_
     def ReturnPositon(self): #현재 캐릭터의 위치를 반환 해주는 함수
         return self.xpos_,self.ypos_
-    def ReturnBox(self):
+    def ReturnBox(self):   #AI충도 박스
         return self.xpos_ -10,self.xpos_+10,self.ypos_+10,self.ypos_-10
 
     def UnitControl(self, event):  # 전체적인 유닛 컨트롤

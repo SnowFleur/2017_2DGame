@@ -25,7 +25,7 @@ def enter():
     global font #폰트
     global ai,g_temp_image
 #    balls = [Ball() for i in range(10)]
-  #  open_canvas()  이어 줄떄애는 꺼야함
+    open_canvas()
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     ai=Ai() #ai 객체 색성
@@ -52,10 +52,14 @@ def draw(frame_time):
     global g_aimframe
     global  g_temp_time
     clear_canvas()
-    map.Draw() #맵 생성
+#    map.Draw() #맵 생성
 
 #    font.draw()
+    draw_rectangle(0,300,300,600)
+    draw_rectangle(700,500,800,600)
+    #에임 750,575
 
+    BoxCheck(ai,unit)  # 임시 AI 판단
     ########################
     # 총알 및 탄피
     #########################
@@ -186,7 +190,7 @@ def update(frame_time):
         bullets.Update(frame_time)
     for shells in shell:
         shells.Update(frame_time)
-
+    Ai.UpDate(ai,frame_time)
 def get_frame_time():
 
     global current_time
