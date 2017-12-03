@@ -37,7 +37,8 @@ class Unit:
         Unit.main_gun.rotate_draw(self.rotate_,self.xpos_,self.ypos_)
 
     def UpDate(self, frame_time):  # 마우스 가 바라보는 방향에 따라 이미지 회전 함수
-        self.rotate_=atan2( -(Main_state.g_mouse_x-self.xpos_) ,( Main_state.g_mouse_y-self.ypos_ ))
+        self.rotate_=atan2( (Main_state.g_mouse_y-self.ypos_) ,( Main_state.g_mouse_x-self.xpos_ ))
+        self.rotate_+= -90*3.14/180
         distance = Unit.RUN_SPEED_PPS * frame_time
         self.ypos_ += (self.ymove_*distance)
         self.xpos_ += (self.xmove_*distance)
