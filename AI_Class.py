@@ -50,9 +50,9 @@ class Ai:
         temp_y3=600-self.leftvector[1]
         temp_y4=600-self.rightvector[1]
 
-        Draw_Line(int(temp_x2), int(temp_y2), int(temp_x), int(temp_y))
-        Draw_Line(int(temp_x2), int(temp_y2), int(self.leftvector[0]), int(temp_y3))
-        Draw_Line(int(temp_x2), int(temp_y2), int(self.rightvector[0]), int(temp_y4))
+#        Draw_Line(int(temp_x2), int(temp_y2), int(temp_x), int(temp_y))
+#        Draw_Line(int(temp_x2), int(temp_y2), int(self.leftvector[0]), int(temp_y3))
+#        Draw_Line(int(temp_x2), int(temp_y2), int(self.rightvector[0]), int(temp_y4))
 
 
     def UpDate(self, frame_time):
@@ -68,7 +68,7 @@ class Ai:
         pass
     def AiMove(self):
 
-        self.rotate_ = atan2((self.ypos_-self.dis_vector[1]*100) - self.ypos_), ((self.ypos_-self.dis_vector[1]*100) - self.xpos_))
+#        self.rotate_ = atan2((self.ypos_-self.dis_vector[1]*100) - self.ypos_), ((self.ypos_-self.dis_vector[1]*100) - self.xpos_))
         self.rotate_ += -90 * 3.14 / 180
 
         if(self.xpos_>800):

@@ -1,5 +1,5 @@
 import game_framework
-from pico2d import*
+from pico2d import *
 import Main_state
 import Title_state
 # 640,360
