@@ -34,8 +34,10 @@ g_sweapon_imag=None #사이드 웨폰 이미지
 g_grenades_imag=None # 수류탄 이미지
 g_line_animg=None #라인 애니메이션
 g_background_imag=None #배경이미지
+bgm=None
 def enter():
     global g_select_imag, g_btn_animag,g_btnon_imag,g_btnoff_imag,g_select_arrow_imag,g_mweapon_imag,g_sweapon_imag,g_grenades_imag,g_line_animg, g_mouse_imag,g_background_imag
+    global bgm
     g_select_imag=load_image('resource/Title_Resource/SelectGun3.png')    #선택 창
     g_btn_animag=load_image('resource/Title_Resource/Button_ani.png')  # 버튼 애니매이션
     g_btnoff_imag=load_image('resource/Title_Resource/Button_play_off.png') #플레이 버튼  off
@@ -47,6 +49,9 @@ def enter():
     g_background_imag = load_image('resource/Title_Resource/BG.png')  # 배경화면
     g_grenades_imag=load_image('resource/Title_Resource/grenades_Scroll.png')   # 수류탄 스크롤
 #    g_line_animg=load_image('resource/Title_Resource/HG_Scrool.png')    #라인 애니메이션
+    bgm = load_music('resource/sound/title_theme2.mp3')
+    bgm.set_volume(100)
+    bgm.repeat_play()
 
 def exit():
     global g_select_imag, g_btn_animag, g_btnon_imag, g_btnoff_imag, g_select_arrow_imag, g_mweapon_imag, g_sweapon_imag, g_grenades_imag, g_line_animg, g_mouse_imag, g_background_imag

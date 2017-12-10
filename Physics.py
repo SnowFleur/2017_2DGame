@@ -16,8 +16,6 @@ def BoxCheck(a,b):
     print("충돌")
     return True
 
-
-
 def Win():
     pass
 

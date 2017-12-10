@@ -21,14 +21,17 @@ g_temp_time=0
 g_temp_image=None
 g_drop_sound=None
 mouse_up=False
+bgm=None
+g_win_imag=None
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
     global shell,bullet  #탄피(클래스),총알(클래스)
     global font #폰트
-    global ai,g_temp_image
-    global  g_drop_sound
-#    balls = [Ball() for i in range(10)]
-    open_canvas()
+    global ai,g_temp_image,bgm,g_win_imag
+    #open_canvas()
+    bgm = load_music('resource/sound/main_theme2.mp3')
+    bgm.set_volume(100)
+    bgm.repeat_play()
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     ai=Ai() #ai 객체 색성
@@ -37,8 +40,7 @@ def enter():
     shell=[Shell() for i in range(100)] # 탄피 객체 생성
     ai = [Ai() for i in range(5)]  # 5명의 AI 생성
 
-    g_drop_sound=load_music('resource/sound/7.62shell3.mp3')
-    g_drop_sound.set_volume(23)
+
 
     g_temp_image=load_image("resource/Main_Resource/win_box.png")
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
@@ -70,6 +72,8 @@ def draw(frame_time):
     clear_canvas()
     map.Draw() #맵 생성
 
+
+
 #    font.draw()
     #에임 750,575
 
@@ -79,18 +83,26 @@ def draw(frame_time):
     #########################
     for bullets in bullet:
         bullets.Draw()
+      #  bullets.draw_box()
     for shells in shell:
         shells.Darw()
     for Ais in ai:
         Ais.Draw()
-        Ais.draw_box()
+      #  Ais.draw_box()
+
+
+    #충돌
+    for bullets in bullet:
+        for Ais in ai:
+            if(BoxCheck(bullets,Ais)):
+                ai.remove(Ais)
+               # g_temp_image.draw(400,300)
 
 
     ########################
     # 유닛 및 무기
     #########################
     unit.Draw()
-
 
 
     ########################
@@ -103,7 +115,7 @@ def draw(frame_time):
 
 
 def handle_events(frame_time):
-    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
+    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매ㅠ크로 정의
     #전역변수
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
@@ -152,7 +164,6 @@ def handle_events(frame_time):
     MouseClickEvents(g_button_type)
 
 
-
 def MouseClickEvents(button):   #마우스를 누르고 있을때 처리할 함수
     MOUSE_DOWN, MOUSE_UP = True, False  # 상수 매크로 정의
     BUTTON_KIND, BUTTON_OPERATION = 0, 1  # 상수 매크로 정의
@@ -177,9 +188,9 @@ def MouseClickEvents(button):   #마우스를 누르고 있을때 처리할 함�
         if shot==True: #발싸 되면 트루 값 반환
             shell[g_count].InputPosition(position_x, position_y)  #탄피
             g_count += 1  # 총알 카운터 증가
-            print("탄피값:%d",g_count)
+          #  print("탄피값:%d",g_count)
             g_rebound_time+=1  #반동 시간 증가 (사실상 g_count 와 역할이 같음;;;)
-            print("반동 시간 값 %d",g_rebound_time)
+          #  print("반동 시간 값 %d",g_rebound_time)
             if g_rebound_time>REBOUND_MAXTIME:
                 if g_rebound<2:  #누르고 있는 동안은 반동값 증가
                     g_rebound+=0.5
@@ -194,9 +205,8 @@ def MouseClickEvents(button):   #마우스를 누르고 있을때 처리할 함�
         if g_rebound>0:  #마우스를 때는 동안은 반동값 감소
             g_rebound-=0.5
             g_rebound_time-=1
-            print("반동계수 %d,반동시간 %d",g_rebound,g_rebound_time)
+            #print("반동계수 %d,반동시간 %d",g_rebound,g_rebound_time)
         g_aimframe=min(0,g_aimframe-button[BUTTON_OPERATION])
-
 
 def pause():
     pass
@@ -221,12 +231,9 @@ def update(frame_time):
 def get_frame_time():
 
     global current_time
-
     frame_time = get_time() - current_time
     current_time += frame_time
     return frame_time
-
-
 
 
 

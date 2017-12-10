@@ -26,23 +26,26 @@ class Bullet:
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         if Bullet.shot_sound == None:  #총쏘는 소리
-            Bullet.shot_sound = load_music('resource/sound/cut1.mp3')
-            Bullet.shot_sound.set_volume(300)
-            Bullet.drop_sound=load_music('resource/sound/7.62shell3.mp3')
-            Bullet.drop_sound.set_volume(23)
+            Bullet.shot_sound =  load_wav('resource/sound/cut1.wav')
+            Bullet.shot_sound.set_volume(300000000)
+            Bullet.drop_sound= load_wav('resource/sound/7.62shell3.wav')
+            Bullet.drop_sound.set_volume(50)
         self.rotate_=0
-        self.sound_count=0
         self.rebound_=0 #반동
         self.rate_time=0 #이걸 주지 않으면 너무 많은 이미지가 한꺼번에 나감
         if Bullet.imag==None:
             Bullet.imag=load_image("resource/Main_Resource/Bullet.png")
+
+    def ReturnBox(self):
+        dx = self.xpos_- self.bg.window_left
+        dy = self.ypos_- self.bg.window_bottom
+        return dx -25, dy - 25, dx+ 25, dy + 25
+    def draw_box(self):
+        draw_rectangle(*self.ReturnBox())
+
+
     def Draw(self):
-        self.sound_count+=self.sound_count
-        print(self.sound_count)
-        if(self.sound_count>10000000000000000000):
-            print("탄피",self.sound_count)
-            self.drop_sound.play()
-            self.sound_count=0
+
         Bullet.imag.rotate_draw(self.rotate_,self.xpos_-self.bg.window_left,
                                 self.ypos_- self.bg.window_bottom,50,70)
     def Update(self, frame_time):
@@ -56,7 +59,8 @@ class Bullet:
         self.ymove_=cos(self.rotate_)*10
         self.xmove_=  - sin(self.rotate_)*10
         self.shot_sound.play()
-       # self.sound_count=1
+        self.drop_sound.play()
+
 
     def UnitPosition(self,xpos,ypos,rotate):
         self.xpos_=xpos
@@ -74,8 +78,7 @@ class Bullet:
         if self.rate_time>25:
             dir= random.randint(Bullet.REBOUND_MINUS,Bullet.REBOUND_PLUS)
             self.shot_sound.play()
-         #   self.sound_count=1
-
+            self.drop_sound.play()
 
             if dir==Bullet.REBOUND_PLUS:
                 self.ymove_ = cos(self.rotate_) * 10
@@ -91,8 +94,6 @@ class Bullet:
 
             return True
 
-
-
 class Shell:
     image=None
     drop_sound = None
@@ -107,7 +108,7 @@ class Shell:
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         if Shell.drop_sound == None:  # 총쏘는 소리
-            Shell.drop_sound=load_music('resource/sound/7.62Shell3.mp3')
+            Shell.drop_sound=load_music('resource/sound/7.62Shell3.wav')
             Shell.drop_sound.set_volume(32)
         if Shell.image==None:
             Shell.image= load_image("resource/Main_Resource/shell.png")

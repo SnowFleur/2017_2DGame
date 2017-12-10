@@ -23,7 +23,7 @@ class Ai:
         self.canvas_height = get_canvas_height()
 
         self.xmove_, self.ymove_ = 0, 0
-        self.xpos_, self.ypos_ = 150, 475
+        self.xpos_, self.ypos_ = random.randint(200, 1800), random.randint(200,1800)
         self.rotate_=0
         self.hp_ = 100  # 유닛 HP 계수
         self.shild_  = 100  # 유닛 실드
@@ -37,10 +37,7 @@ class Ai:
 
     def SetBackground(self, bg):
         self.bg = bg
-        self.xpos_ = self.bg.w / 2
-        self.ypos_ = self.bg.h / 2
-    def TempReturnAiBox(self):
-        return self.xpos_-50,self.ypos_-50,self.xpos_+50,self.ypos_+50
+
 
 
     def Draw(self):  # Left,Bottom,가로길이,세로길이,x,y,
@@ -97,7 +94,7 @@ class Ai:
     def ReturnBox(self):
         dx = self.xpos_- self.bg.window_left
         dy = self.ypos_- self.bg.window_bottom
-        return dx -5, dy - 5, dx+ 5, dy + 5
+        return dx -25, dy - 25, dx+ 25, dy + 25
 
     def draw_box(self):
         draw_rectangle(*self.ReturnBox())
