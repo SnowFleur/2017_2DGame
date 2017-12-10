@@ -1,6 +1,7 @@
 from pico2d import *
 from Title_state import *
 from math import *
+import Map_Class
 import Main_state
 
 class Unit:
@@ -24,6 +25,8 @@ class Unit:
     KEY_DOWN,KEY_UP=True,False
     LEFT_KEY,RIGHT_KEY,UP_KEY,DOWN_KEY=0,1,2,3
     def __init__(self):
+        self.canvas_width = get_canvas_width()
+        self.canvas_height = get_canvas_height()
         self.xmove_,self.ymove_=0,0    #키보드 연속 입력처리를 위한 변수
         self.xpos_,self.ypos_=100,100 # 실질적인 객체 위치 값
         self.rotate_=0 # 마우스 위치에 따른 객체 회전
@@ -32,16 +35,39 @@ class Unit:
         self.keyindex=[False,False,False,False] #키보드 인덱스
         if(Unit.main_gun==None):
             self.LoadImage()
+    #스크롤링 추가#
+    def SetBackground(self, bg):
+        self.bg = bg
+        self.xpos_ = self.bg.w / 2
+        self.ypos_ = self.bg.h / 2
+
 
     def Draw(self):    #캐릭터 그리기
-        Unit.main_gun.rotate_draw(self.rotate_,self.xpos_,self.ypos_)
+        #스크롤링 변경
+        Unit.main_gun.rotate_draw(self.rotate_, self.xpos_ - self.bg.window_left,self.ypos_ - self.bg.window_bottom)
 
     def UpDate(self, frame_time):  # 마우스 가 바라보는 방향에 따라 이미지 회전 함수
-        self.rotate_=atan2( (Main_state.g_mouse_y-self.ypos_) ,( Main_state.g_mouse_x-self.xpos_ ))
+        # 스크롤링 추가
+        self.bg.window_left = 0
+        self.bg.window_bottom = 0
+        dx=self.xpos_-self.canvas_width//2
+        dy=self.ypos_-self.canvas_height//2
+
+        x=Main_state.g_mouse_x+dx
+        y=Main_state.g_mouse_y+dy
+
+        self.rotate_ = atan2((y- self.ypos_),
+                             (x - self.xpos_))
+        #self.rotate_=atan2(    (    Main_state.g_mouse_y  -self.ypos_  ) ,
+        #                       ( Main_state.g_mouse_x-self.xpos_)    )
+
+
         self.rotate_+= -90*3.14/180
         distance = Unit.RUN_SPEED_PPS * frame_time
         self.ypos_ += (self.ymove_*distance)
         self.xpos_ += (self.xmove_*distance)
+
+
 
     def ReturnRotate(self):   #현재 캐릭터가 바라보는 각도를 반환 해주는 함수
         return self.rotate_

@@ -19,11 +19,14 @@ g_rebound=0 #반동
 g_rebound_time = 0  # 반동 시간 제한할 지역변수
 g_temp_time=0
 g_temp_image=None
+g_drop_sound=None
+mouse_up=False
 def enter():
     global unit,map, g_mouse_aim   #유닛(클래스),맵(클래스),마우스에임(이미지)
     global shell,bullet  #탄피(클래스),총알(클래스)
     global font #폰트
     global ai,g_temp_image
+    global  g_drop_sound
 #    balls = [Ball() for i in range(10)]
     open_canvas()
     unit = Unit()  # Unit 객체 생성
@@ -32,9 +35,22 @@ def enter():
 #    font=Font() # font 객체생성
     bullet=[Bullet() for i in range(100)] #총알 객체 생성
     shell=[Shell() for i in range(100)] # 탄피 객체 생성
+    ai = [Ai() for i in range(5)]  # 5명의 AI 생성
+
+    g_drop_sound=load_music('resource/sound/7.62shell3.mp3')
+    g_drop_sound.set_volume(23)
 
     g_temp_image=load_image("resource/Main_Resource/win_box.png")
     g_mouse_aim=load_image("resource/UI/ReactionAim.png") #에임 이미지 로드
+    #새로추가
+    map.set_center_object(unit)
+    unit.SetBackground(map)
+    for Ais in ai:
+        Ais.SetBackground(map)
+    for bullets in bullet:
+        bullets.SetBackground(map)
+    for shells in shell:
+        shells.SetBackground(map)
 
 def exit():
     global unit,map,g_mouse_aim,bullet,shell,ai
@@ -52,14 +68,12 @@ def draw(frame_time):
     global g_aimframe
     global  g_temp_time
     clear_canvas()
-#    map.Draw() #맵 생성
+    map.Draw() #맵 생성
 
 #    font.draw()
-    draw_rectangle(0,300,300,600)
-    draw_rectangle(700,500,800,600)
     #에임 750,575
 
-    BoxCheck(ai,unit)  # 임시 AI 판단
+#    BoxCheck(ai,unit)  # 임시 AI 판단
     ########################
     # 총알 및 탄피
     #########################
@@ -67,14 +81,17 @@ def draw(frame_time):
         bullets.Draw()
     for shells in shell:
         shells.Darw()
+    for Ais in ai:
+        Ais.Draw()
+        Ais.draw_box()
+
+
     ########################
     # 유닛 및 무기
     #########################
     unit.Draw()
-#    if g_temp_time<1200:
-    ai.Draw()
-#    else:
-#        g_temp_image.draw(400,300)
+
+
 
     ########################
     # 마우스 커서 관련
@@ -91,7 +108,8 @@ def handle_events(frame_time):
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
     global g_count   # 총알 카운터
-
+   #global g_drop_sound 탄피 사운드 추후 삭제 요망
+    global mouse_up
     #지역변수
     position_y, position_x, position_rotate = 0, 0, 0  # 현재 유닛의 바라보는 방향과 위치 값 받을 지역변수
     #********************
@@ -105,6 +123,8 @@ def handle_events(frame_time):
         elif (event.type,event.button) == (SDL_MOUSEBUTTONDOWN,SDL_BUTTON_LEFT): #마우스클릭 (DWON)
             g_button_type[0]=MOUSE_DOWN
             g_button_type[1]=60
+            mouse_up=True
+
 
             ########################
             # 총알 날리는 부분
@@ -124,6 +144,8 @@ def handle_events(frame_time):
         elif (event.type, event.button) == (SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT):  # 마우스클릭 (UP)
             g_button_type[0] = MOUSE_UP
             g_button_type[1] = 0
+          #  g_drop_sound.play()
+
         else:
          unit.UnitControl(event)
 
@@ -190,7 +212,12 @@ def update(frame_time):
         bullets.Update(frame_time)
     for shells in shell:
         shells.Update(frame_time)
-    Ai.UpDate(ai,frame_time)
+    for Ais in ai:
+        Ais.UpDate(frame_time)
+    map.Update(frame_time)
+
+
+
 def get_frame_time():
 
     global current_time

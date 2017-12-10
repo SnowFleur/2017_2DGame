@@ -5,8 +5,6 @@ import game_framework
 
 
 
-
-
 def BoxCheck(a,b):
     left_a, bottom_a, right_a, top_a = a.ReturnBox()
     left_b, bottom_b, right_b, top_b = b.ReturnBox()

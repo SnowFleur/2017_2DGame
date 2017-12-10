@@ -19,6 +19,9 @@ class Ai:
 
 
     def __init__(self):
+        self.canvas_width = get_canvas_width()
+        self.canvas_height = get_canvas_height()
+
         self.xmove_, self.ymove_ = 0, 0
         self.xpos_, self.ypos_ = 150, 475
         self.rotate_=0
@@ -31,16 +34,26 @@ class Ai:
         self.keyindex = [False, False, False, False]
         if (Ai.image == None):
             Ai.image = load_image('resource/Main_Resource/AI_INGAME.png')
+
+    def SetBackground(self, bg):
+        self.bg = bg
+        self.xpos_ = self.bg.w / 2
+        self.ypos_ = self.bg.h / 2
+    def TempReturnAiBox(self):
+        return self.xpos_-50,self.ypos_-50,self.xpos_+50,self.ypos_+50
+
+
     def Draw(self):  # Left,Bottom,가로길이,세로길이,x,y,
         def VectorDotProduc():
             self.leftvector[0] = 50*sin(self.rotate_-0.523)+ self.xpos_
             self.leftvector[1] = 50*cos(self.rotate_-0.523) + self.ypos_
-
             self.rightvector[0] = 50 * sin(self.rotate_ +0.523) + self.xpos_
             self.rightvector[1] = 50 * cos(self.rotate_ + 0.523) + self.ypos_
 
+
+
         VectorDotProduc()
-        self.image.rotate_draw(self.rotate_, self.xpos_, self.ypos_)
+        self.image.rotate_draw(self.rotate_, self.xpos_- self.bg.window_left, self.ypos_- self.bg.window_bottom)
         temp_x = (self.xpos_ + self.dis_vector[0] * 100)
         temp_y = 600-(self.ypos_ + self.dis_vector[1] * 100)
 
@@ -56,6 +69,8 @@ class Ai:
 
 
     def UpDate(self, frame_time):
+        self.bg.window_left = 0
+        self.bg.window_bottom = 0
         self.handle_state[self.state_](self)
         distance = Ai.RUN_SPEED_PPS * frame_time
         self.ypos_ += (self.dis_vector[1] * distance)
@@ -67,20 +82,25 @@ class Ai:
 
         pass
     def AiMove(self):
+        self.rotate_ = atan2( ((self.ypos_ - self.dis_vector[1]*100) - self.ypos_),((self.xpos_ - self.dis_vector[0] * 100) - self.xpos_)   )
+        #self.rotate_ = atan2((self.ypos_-self.dis_vector[1]*100) - self.ypos_), ((self.ypos_-self.dis_vector[1]*100) - self.xpos_))
+        self.rotate_ += 90 * 3.14 / 180
 
-#        self.rotate_ = atan2((self.ypos_-self.dis_vector[1]*100) - self.ypos_), ((self.ypos_-self.dis_vector[1]*100) - self.xpos_))
-        self.rotate_ += -90 * 3.14 / 180
-
-        if(self.xpos_>800):
+        if(self.xpos_>1800):
             self.dis_vector = [random.randint(-1, 0), random.randint(-1, 1)]
         if (self.xpos_< 0):
             self.dis_vector = [random.randint(0, 1), random.randint(-1, 1)]
-        if (self.ypos_ > 600):
+        if (self.ypos_ > 1800):
                 self.dis_vector = [random.randint(-1, 1), random.randint(-1, 0)]
         if (self.ypos_ < 0):
                 self.dis_vector = [random.randint(-1, 1), random.randint(0, 1)]
     def ReturnBox(self):
-        return self.xpos_ -150, self.xpos_ + 150, self.ypos_ + 125, self.ypos_ - 125
+        dx = self.xpos_- self.bg.window_left
+        dy = self.ypos_- self.bg.window_bottom
+        return dx -5, dy - 5, dx+ 5, dy + 5
+
+    def draw_box(self):
+        draw_rectangle(*self.ReturnBox())
 
     handle_state = {   # AI 핸들 컨트롤러
             AI_ATTACK: AiAttack,
