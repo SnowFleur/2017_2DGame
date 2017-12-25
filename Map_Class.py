@@ -4,7 +4,7 @@ class Map:
     #상수 매크로 정의
     FIRST_MAP,SECOND_MAP=1,2
     def __init__(self):  #생성과 동시에 두개의 맵 이미지 로드
-        self.army_image = load_image('resource/map/army_map.png')
+        self.army_image = load_image('resource/map/army_map2.png')
         self.city_map= load_image('resource/map/city_map.png')
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()

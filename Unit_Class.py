@@ -38,65 +38,52 @@ class Unit:
     #스크롤링 추가#
     def SetBackground(self, bg):
         self.bg = bg
-        self.xpos_ = self.bg.w / 2
-        self.ypos_ = self.bg.h / 2
-
+        #일종의 초기값
+        self.xpos_ = 400
+        self.ypos_ = 300
 
     def Draw(self):    #캐릭터 그리기
         #스크롤링 변경
+        x = Main_state.g_mouse_x+self.bg.window_left
+        y = Main_state.g_mouse_y+self.bg.window_bottom
+        self.rotate_=atan2(self.ypos_-y,self.xpos_-x)
+        self.rotate_+= 90*3.14/180
         Unit.main_gun.rotate_draw(self.rotate_, self.xpos_ - self.bg.window_left,self.ypos_ - self.bg.window_bottom)
-
     def UpDate(self, frame_time):  # 마우스 가 바라보는 방향에 따라 이미지 회전 함수
-        # 스크롤링 추가
-        self.bg.window_left = 0
-        self.bg.window_bottom = 0
-        dx=self.xpos_-self.canvas_width//2
-        dy=self.ypos_-self.canvas_height//2
-
-        x=Main_state.g_mouse_x+dx
-        y=Main_state.g_mouse_y+dy
-
-        self.rotate_ = atan2((y- self.ypos_),
-                             (x - self.xpos_))
-        #self.rotate_=atan2(    (    Main_state.g_mouse_y  -self.ypos_  ) ,
-        #                       ( Main_state.g_mouse_x-self.xpos_)    )
-
-
-        self.rotate_+= -90*3.14/180
-        distance = Unit.RUN_SPEED_PPS * frame_time
-        self.ypos_ += (self.ymove_*distance)
+        distance = Unit.RUN_SPEED_PPS * frame_time  #속도
+        self.ypos_ += (self.ymove_*distance)       #속도에 따른 X,Y값증가
         self.xpos_ += (self.xmove_*distance)
-
-
-
+        #플레이어 맵 크기 만큼 이동 제한
+        self.xpos_ = clamp(50, self.xpos_, self.bg.w-50)
+        self.ypos_ = clamp(50, self.ypos_, self.bg.h-50)
     def ReturnRotate(self):   #현재 캐릭터가 바라보는 각도를 반환 해주는 함수
         return self.rotate_
     def ReturnPositon(self): #현재 캐릭터의 위치를 반환 해주는 함수
         return self.xpos_,self.ypos_
-    def ReturnBox(self):   #AI충도 박스
-        return self.xpos_ -10,self.xpos_+10,self.ypos_+10,self.ypos_-10
+    def ReturnCameraPosition(self): #카메라 값 반환
+        camera_x=self.bg.window_left
+        camera_y=self.bg.window_bottom
+        return camera_x,camera_x+800,camera_y+600,camera_y
 
     def UnitControl(self, event):  # 전체적인 유닛 컨트롤
-        if(event.type,event.key)==(SDL_KEYDOWN,SDLK_LEFT): #왼쪽 이동
+        if(event.type,event.key)==(SDL_KEYDOWN,SDLK_a): #왼쪽 이동
             self.xmove_=-1
             print("왼쪽")
             self.keyindex[self.LEFT_KEY]=self.KEY_DOWN
-
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):  # 오른쪽 이동
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_d):  # 오른쪽 이동
             self.xmove_= 1
             print("오른쪽")
             self.keyindex[self.RIGHT_KEY] = self.KEY_DOWN
-
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_UP):  # 위쪽 이동
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_w):  # 위쪽 이동
                 self.ymove_ = 1
                 print("위쪽")
                 self.keyindex[self.UP_KEY] = self.KEY_DOWN
 
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_DOWN):  # 아래쪽 이동
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):  # 아래쪽 이동
                 self.ymove_ = -1
                 print("아래쪽")
                 self.keyindex[self.DOWN_KEY] = self.KEY_DOWN
-        if (event.type, event.key) == (SDL_KEYUP, SDLK_LEFT):  # 왼쪽 업
+        if (event.type, event.key) == (SDL_KEYUP, SDLK_a):  # 왼쪽 업
             if self.keyindex[self.RIGHT_KEY]==self.KEY_DOWN:
                 self.xmove_ = 1
                 self.keyindex[self.LEFT_KEY]=self.KEY_UP
@@ -104,7 +91,7 @@ class Unit:
                 self.xmove_=0
                 self.keyindex[self.LEFT_KEY]=self.KEY_UP
 
-        elif (event.type, event.key) == (SDL_KEYUP, SDLK_RIGHT):  # 오른쪽 업
+        elif (event.type, event.key) == (SDL_KEYUP, SDLK_d):  # 오른쪽 업
             if self.keyindex[self.LEFT_KEY] == self.KEY_DOWN:
                 self.xmove_ = -1
                 self.keyindex[self.RIGHT_KEY] = self.KEY_UP
@@ -112,7 +99,7 @@ class Unit:
                 self.xmove_=0
                 self.keyindex[self.RIGHT_KEY] = self.KEY_UP
 
-        elif (event.type, event.key) == (SDL_KEYUP, SDLK_UP):  # 윗키 업
+        elif (event.type, event.key) == (SDL_KEYUP, SDLK_w):  # 윗키 업
             if self.keyindex[self.DOWN_KEY]==self.KEY_DOWN:
                 self.ymove_ = -1
                 self.keyindex[self.UP_KEY]=self.KEY_UP
@@ -120,7 +107,7 @@ class Unit:
                 self.ymove_=0
                 self.keyindex[self.UP_KEY] = self.KEY_UP
 
-        elif (event.type, event.key) == (SDL_KEYUP, SDLK_DOWN):  # 아래키 업
+        elif (event.type, event.key) == (SDL_KEYUP, SDLK_s):  # 아래키 업
             if self.keyindex[self.UP_KEY] == self.KEY_DOWN:
                 self.ymove_ = 1
                 self.keyindex[self.DOWN_KEY] = self.KEY_UP

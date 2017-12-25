@@ -28,10 +28,14 @@ def enter():
     global shell,bullet  #탄피(클래스),총알(클래스)
     global font #폰트
     global ai,g_temp_image,bgm,g_win_imag
-    #open_canvas()
-    bgm = load_music('resource/sound/main_theme2.mp3')
-    bgm.set_volume(100)
-    bgm.repeat_play()
+    open_canvas()
+    #
+    #노래
+    #
+#    bgm = load_music('resource/sound/main_theme2.mp3')
+#    bgm.set_volume(100)
+#    bgm.repeat_play()
+
     unit = Unit()  # Unit 객체 생성
     map = Map()  # 맵 객체 생성
     ai=Ai() #ai 객체 색성
@@ -70,7 +74,8 @@ def draw(frame_time):
     global g_aimframe
     global  g_temp_time
     clear_canvas()
-    map.Draw() #맵 생성
+    map.Draw()
+
 
 
 
@@ -87,8 +92,11 @@ def draw(frame_time):
     for shells in shell:
         shells.Darw()
     for Ais in ai:
+        if(AiViewCheck(Ais,unit)):
+            enemy_xpos,enemy_ypos=unit.ReturnPositon()
+            Ais.AiAttack(enemy_xpos,enemy_ypos)
         Ais.Draw()
-      #  Ais.draw_box()
+        Ais.draw_box()
 
 
     #충돌
@@ -100,11 +108,9 @@ def draw(frame_time):
 
 
     ########################
-    # 유닛 및 무기
+    # 플레이어 및 맵
     #########################
     unit.Draw()
-
-
     ########################
     # 마우스 커서 관련
     ########################
@@ -115,7 +121,7 @@ def draw(frame_time):
 
 
 def handle_events(frame_time):
-    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매ㅠ크로 정의
+    MOUSE_DOWN,MOUSE_UP=True,False  #상수 매크로 정의
     #전역변수
     global g_mouse_x, g_mouse_y  #마우스 에임 좌표
     global g_button_type   #마우스 타입 및 값 저장 할 리스트(배열)
@@ -142,7 +148,7 @@ def handle_events(frame_time):
             # 총알 날리는 부분
             ########################
             position_rotate = unit.ReturnRotate()  # 유닛의 회전 좌표값
-            position_x, position_y = unit.ReturnPositon()  # 유닛의 현재 좌표
+            position_x, position_y = unit.ReturnPositon()  # 유닛의 현재 좌표 리턴
             bullet[g_count].UnitPosition(position_x, position_y, position_rotate)
             bullet[g_count].Shot()  # 총알 날리
             ########################

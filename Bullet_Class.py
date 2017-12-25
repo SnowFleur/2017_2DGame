@@ -7,7 +7,7 @@ class Bullet:
     imag=None
 
     PIXEL_PER_METER=(10.0/0.3)  #10 pixel 30cm
-    RUN_SPPED_KMPH=30.0   #시간당 20km
+    RUN_SPPED_KMPH=15.0   #시간당 20km
     RUN_SPEED_MPH=(RUN_SPPED_KMPH*1000.0/60.0)
     RUN_SPEED_MPS=(RUN_SPEED_MPH/60.0)
     RUN_SPEED_PPS=(RUN_SPEED_MPS* PIXEL_PER_METER)
@@ -60,7 +60,6 @@ class Bullet:
         self.xmove_=  - sin(self.rotate_)*10
         self.shot_sound.play()
         self.drop_sound.play()
-
 
     def UnitPosition(self,xpos,ypos,rotate):
         self.xpos_=xpos
